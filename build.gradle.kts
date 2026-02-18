@@ -18,3 +18,8 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+tasks.register<JavaExec>("run") {
+    group = "application"
+    mainClass.set("br.com.softhouse.dende.DendeEventosApplication")
+    classpath = sourceSets["main"].runtimeClasspath
+}
