@@ -48,13 +48,13 @@ Este projeto depende do framework educacional:
 **Nome da Equipe:**  
 
 
-**Integrantes do Time:**
+**Integrantes do Time: BARCELONA**
 
-1. ____________________________________
-2. ____________________________________
-3. ____________________________________
-4. ____________________________________
-5. ____________________________________
+MEMBRO 1	IGOR GUSTAVO
+MEMBRO 2	LUIZ ALBERTO
+MEMBRO 3	RAFAEL RUAS
+MEMBRO 4	RAIANE LEMOS
+MEMBRO 5	RYAN RIBEIRO 
 
 ---
 
