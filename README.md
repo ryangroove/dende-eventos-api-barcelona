@@ -43,12 +43,12 @@ Este projeto depende do framework educacional:
 
 ## 👥 Equipe
 
-> Preencha esta seção com as informações do seu time
-
-**Nome da Equipe:**  
 
 
-**Integrantes do Time: BARCELONA**
+**Nome da Equipe:BARCELONA**  
+
+
+**Integrantes do Time:**
 
 1.	Igor Gustavo Nascimento Lacerda
 
