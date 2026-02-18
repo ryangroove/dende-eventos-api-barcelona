@@ -45,7 +45,7 @@ Este projeto depende do framework educacional:
 
 
 
-**Nome da Equipe:BARCELONA**  
+**Nome da Equipe: BARCELONA**  
 
 
 **Integrantes do Time:**
