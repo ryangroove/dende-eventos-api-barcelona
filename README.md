@@ -50,15 +50,15 @@ Este projeto depende do framework educacional:
 
 **Integrantes do Time: BARCELONA**
 
-MEMBRO 1	Igor Gustavo Nascimento Lacerda
+1.	Igor Gustavo Nascimento Lacerda
 
-MEMBRO 2	Luiz Alberto Souza Da Silva
+2.	Luiz Alberto Souza Da Silva
 
-MEMBRO 3	Rafael Ruas Reis Nunes
+3.	Rafael Ruas Reis Nunes
 
-MEMBRO 4	Raiane Lemos Santos
+4.	Raiane Lemos Santos
 
-MEMBRO 5	Ryan Ribeiro Silva 
+5.	Ryan Ribeiro Silva 
 
 ---
 
