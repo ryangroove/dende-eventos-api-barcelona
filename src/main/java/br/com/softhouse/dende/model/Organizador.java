@@ -5,6 +5,7 @@ import java.util.Objects;
 
 public class Organizador {
 
+    private Long id;
     private String nome;
     private LocalDate dataNascimento;
     private String sexo;
@@ -12,99 +13,49 @@ public class Organizador {
     private String cnpj;
     private String razaoSocial;
     private String nomeFantasia;
-
-    public Organizador(String nome, LocalDate dataNascimento, String sexo, String email, String cnpj, String razaoSocial, String nomeFantasia) {
-        this.nome = nome;
-        this.dataNascimento = dataNascimento;
-        this.sexo = sexo;
-        this.email = email;
-        this.cnpj = cnpj;
-        this.razaoSocial = razaoSocial;
-        this.nomeFantasia = nomeFantasia;
-    }
+    private boolean ativo;
 
     public Organizador() {
+        this.ativo = true;
     }
 
-    public String getNome() {
-        return nome;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    public boolean isAtivo() { return ativo; }
+    public void setAtivo(boolean ativo) { this.ativo = ativo; }
 
-    public LocalDate getDataNascimento() {
-        return dataNascimento;
-    }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
-    public void setDataNascimento(LocalDate dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
+    public LocalDate getDataNascimento() { return dataNascimento; }
+    public void setDataNascimento(LocalDate dataNascimento) { this.dataNascimento = dataNascimento; }
 
-    public String getSexo() {
-        return sexo;
-    }
+    public String getSexo() { return sexo; }
+    public void setSexo(String sexo) { this.sexo = sexo; }
 
-    public void setSexo(String sexo) {
-        this.sexo = sexo;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getCnpj() { return cnpj; }
+    public void setCnpj(String cnpj) { this.cnpj = cnpj; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public String getRazaoSocial() { return razaoSocial; }
+    public void setRazaoSocial(String razaoSocial) { this.razaoSocial = razaoSocial; }
 
-    public String getCnpj() {
-        return cnpj;
-    }
-
-    public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
-    }
-
-    public String getRazaoSocial() {
-        return razaoSocial;
-    }
-
-    public void setRazaoSocial(String razaoSocial) {
-        this.razaoSocial = razaoSocial;
-    }
-
-    public String getNomeFantasia() {
-        return nomeFantasia;
-    }
-
-    public void setNomeFantasia(String nomeFantasia) {
-        this.nomeFantasia = nomeFantasia;
-    }
+    public String getNomeFantasia() { return nomeFantasia; }
+    public void setNomeFantasia(String nomeFantasia) { this.nomeFantasia = nomeFantasia; }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        Organizador that = (Organizador) object;
-        return Objects.equals(nome, that.nome) && Objects.equals(dataNascimento, that.dataNascimento) && Objects.equals(sexo, that.sexo) && Objects.equals(email, that.email) && Objects.equals(cnpj, that.cnpj) && Objects.equals(razaoSocial, that.razaoSocial) && Objects.equals(nomeFantasia, that.nomeFantasia);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Organizador)) return false;
+        Organizador that = (Organizador) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nome, dataNascimento, sexo, email, cnpj, razaoSocial, nomeFantasia);
-    }
-
-    @Override
-    public String toString() {
-        return "Organizador{" +
-                "nome='" + nome + '\'' +
-                ", dataNascimento=" + dataNascimento +
-                ", sexo='" + sexo + '\'' +
-                ", email='" + email + '\'' +
-                ", cnpj='" + cnpj + '\'' +
-                ", razaoSocial='" + razaoSocial + '\'' +
-                ", nomeFantasia='" + nomeFantasia + '\'' +
-                '}';
+        return Objects.hash(id);
     }
 }

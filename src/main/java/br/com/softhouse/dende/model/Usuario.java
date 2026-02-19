@@ -5,79 +5,54 @@ import java.util.Objects;
 
 public class Usuario {
 
+    private Long id;
     private String nome;
     private LocalDate dataNascimento;
     private String sexo;
     private String email;
-
-    public Usuario(
-            final String nome,
-            final LocalDate dataNascimento,
-            final String sexo,
-            final String email
-    ) {
-        this.nome = nome;
-        this.dataNascimento = dataNascimento;
-        this.sexo = sexo;
-        this.email = email;
-    }
+    private boolean ativo;
 
     public Usuario() {
-
+        this.ativo = true;
     }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
+    public Usuario(Long id, String nome, LocalDate dataNascimento, String sexo, String email) {
+        this.id = id;
         this.nome = nome;
-    }
-
-    public LocalDate getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
-    }
-
-    public String getSexo() {
-        return sexo;
-    }
-
-    public void setSexo(String sexo) {
         this.sexo = sexo;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
         this.email = email;
+        this.ativo = true;
     }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public boolean isAtivo() { return ativo; }
+    public void setAtivo(boolean ativo) { this.ativo = ativo; }
+
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+
+    public LocalDate getDataNascimento() { return dataNascimento; }
+    public void setDataNascimento(LocalDate dataNascimento) { this.dataNascimento = dataNascimento; }
+
+    public String getSexo() { return sexo; }
+    public void setSexo(String sexo) { this.sexo = sexo; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        Usuario usuario = (Usuario) object;
-        return Objects.equals(nome, usuario.nome) && Objects.equals(dataNascimento, usuario.dataNascimento) && Objects.equals(sexo, usuario.sexo) && Objects.equals(email, usuario.email);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Usuario)) return false;
+        Usuario usuario = (Usuario) o;
+        return Objects.equals(id, usuario.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nome, dataNascimento, sexo, email);
-    }
-
-    @Override
-    public String toString() {
-        return "Usuario{" +
-                "nome='" + nome + '\'' +
-                ", dataNascimento=" + dataNascimento +
-                ", sexo='" + sexo + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        return Objects.hash(id);
     }
 }

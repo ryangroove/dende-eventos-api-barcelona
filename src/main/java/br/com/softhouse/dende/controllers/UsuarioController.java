@@ -1,12 +1,7 @@
 package br.com.softhouse.dende.controllers;
 
 import br.com.dende.softhouse.annotations.Controller;
-import br.com.dende.softhouse.annotations.request.GetMapping;
-import br.com.dende.softhouse.annotations.request.PostMapping;
-import br.com.dende.softhouse.annotations.request.PutMapping;
-import br.com.dende.softhouse.annotations.request.RequestBody;
-import br.com.dende.softhouse.annotations.request.RequestMapping;
-import br.com.dende.softhouse.annotations.request.PathVariable;
+import br.com.dende.softhouse.annotations.request.*;
 import br.com.dende.softhouse.process.route.ResponseEntity;
 import br.com.softhouse.dende.model.Usuario;
 import br.com.softhouse.dende.repositories.Repositorio;
@@ -15,24 +10,47 @@ import br.com.softhouse.dende.repositories.Repositorio;
 @RequestMapping(path = "/usuarios")
 public class UsuarioController {
 
-    private final Repositorio repositorio;
+    private final Repositorio repositorio = Repositorio.getInstance();
 
-    public UsuarioController() {
-        this.repositorio = Repositorio.getInstance();
-    }
-
+    // POST /usuarios
     @PostMapping
-    public ResponseEntity<String> cadastroUsuario(@RequestBody Usuario usuario){
-        return ResponseEntity.ok("Usuario " + usuario.getEmail() + " registrado com sucesso!");
+    public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuario) {
+        Usuario salvo = repositorio.salvarUsuario(usuario);
+        return ResponseEntity.ok(salvo);
     }
 
-    @GetMapping
-    public ResponseEntity<String> getUsuario() {
-        return ResponseEntity.ok("Empty");
+    // GET /usuarios/{usuarioId}
+    @GetMapping(path = "/{usuarioId}")
+    public ResponseEntity<Usuario> buscar(@PathVariable(parameter = "usuarioId") Long usuarioId) {
+        Usuario usuario = repositorio.buscarUsuario(usuarioId);
+        return ResponseEntity.ok(usuario);
     }
 
+    // PUT /usuarios/{usuarioId}
     @PutMapping(path = "/{usuarioId}")
-    public ResponseEntity<String> alterarUsuario(@PathVariable(parameter = "usuarioId") long usuarioId, @RequestBody Usuario usuario) {
-        return ResponseEntity.ok("Usuario " + usuario.getEmail() + " do usuarioId = " + usuarioId + " alterado com sucesso!");
+    public ResponseEntity<Usuario> alterar(
+            @PathVariable(parameter = "usuarioId") Long usuarioId,
+            @RequestBody Usuario usuarioAtualizado) {
+
+        Usuario usuario = repositorio.buscarUsuario(usuarioId);
+
+        usuario.setNome(usuarioAtualizado.getNome());
+        usuario.setEmail(usuarioAtualizado.getEmail());
+        usuario.setSexo(usuarioAtualizado.getSexo());
+        usuario.setDataNascimento(usuarioAtualizado.getDataNascimento());
+
+        return ResponseEntity.ok(usuario);
+    }
+
+    // PATCH /usuarios/{usuarioId}/{status}
+    @PatchMapping(path = "/{usuarioId}/{status}")
+    public ResponseEntity<Usuario> alterarStatus(
+            @PathVariable(parameter = "usuarioId") Long usuarioId,
+            @PathVariable(parameter = "status") Boolean status) {
+
+        Usuario usuario = repositorio.buscarUsuario(usuarioId);
+        usuario.setAtivo(status);
+
+        return ResponseEntity.ok(usuario);
     }
 }
