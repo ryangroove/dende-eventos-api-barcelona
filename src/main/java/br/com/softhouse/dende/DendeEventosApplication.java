@@ -1,20 +1,12 @@
 package br.com.softhouse.dende;
 
-import br.com.dende.softhouse.process.WebApplication;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.IOException;
-
+@SpringBootApplication
 public class DendeEventosApplication {
-    public static void main(String[] args) throws IOException {
 
-        WebApplication webApplication = new WebApplication(DendeEventosApplication.class);
-        webApplication
-                .getContext()
-                .getAllBeans()
-                .forEach(object -> {
-                    System.out.println(object.getClass().getName());
-                });
-        webApplication.run();
-
+    public static void main(String[] args) {
+        SpringApplication.run(DendeEventosApplication.class, args);
     }
 }

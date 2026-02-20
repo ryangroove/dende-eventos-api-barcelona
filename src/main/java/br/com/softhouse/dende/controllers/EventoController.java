@@ -2,35 +2,45 @@ package br.com.softhouse.dende.controllers;
 
 import br.com.softhouse.dende.model.Evento;
 import br.com.softhouse.dende.repositories.Repositorio;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/eventos")
 public class EventoController {
 
     private final Repositorio repo = Repositorio.getInstance();
 
-    // Criar evento
-    public Evento criarEvento(Evento evento) {
+    @PostMapping("/{organizadorId}")
+    public Evento criar(@PathVariable Long organizadorId,
+                        @RequestBody Evento evento) {
+        evento.setOrganizadorId(organizadorId);
+        evento.validarCadastro();
         return repo.salvarEvento(evento);
     }
 
-    // Buscar evento
-    public Evento buscarEvento(Long id) {
-        return repo.buscarEvento(id);
+    @PutMapping("/{eventoId}")
+    public Evento atualizar(@PathVariable Long eventoId,
+                            @RequestBody Evento dados) {
+        Evento e = repo.buscarEvento(eventoId);
+        e.setNome(dados.getNome());
+        e.setDescricao(dados.getDescricao());
+        e.setInicio(dados.getInicio());
+        e.setFim(dados.getFim());
+        return e;
     }
 
-    // Eventos do organizador
-    public List<Evento> eventosDoOrganizador(Long organizadorId) {
-        return repo.eventosDoOrganizador(organizadorId);
+    @PatchMapping("/{eventoId}/status")
+    public Evento status(@PathVariable Long eventoId,
+                         @RequestParam boolean ativo) {
+        Evento e = repo.buscarEvento(eventoId);
+        e.setAtivo(ativo);
+        return e;
     }
 
-    // Feed de eventos
-    public List<Evento> feed() {
-        return repo.feedEventos();
-    }
-
-    // Cancelar evento (cascata)
-    public void cancelarEvento(Long eventoId) {
-        repo.cancelarEvento(eventoId);
+    @GetMapping("/organizador/{organizadorId}")
+    public List<Evento> listar(@PathVariable Long organizadorId) {
+        return repo.listarEventosPorOrganizador(organizadorId);
     }
 }

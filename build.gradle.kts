@@ -1,13 +1,11 @@
 plugins {
-    id("java")
+    java
+    id("org.springframework.boot") version "3.2.2"
+    id("io.spring.dependency-management") version "1.1.4"
 }
 
 group = "br.com.softhouse.dende"
-version = "1.0-SNAPSHOT"
-
-repositories {
-    mavenCentral()
-}
+version = "0.0.1-SNAPSHOT"
 
 java {
     toolchain {
@@ -15,18 +13,16 @@ java {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    implementation("io.github.lasilva:dendeframework:1.0.1")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
-tasks.test {
+tasks.withType<Test> {
     useJUnitPlatform()
-}
-
-tasks.register<JavaExec>("run") {
-    group = "application"
-    mainClass.set("br.com.softhouse.dende.DendeEventosApplication")
-    classpath = sourceSets["main"].runtimeClasspath
 }
