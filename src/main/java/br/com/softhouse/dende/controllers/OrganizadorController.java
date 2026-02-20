@@ -1,60 +1,30 @@
 package br.com.softhouse.dende.controllers;
 
-import br.com.dende.softhouse.annotations.Controller;
-import br.com.dende.softhouse.annotations.request.*;
-import br.com.dende.softhouse.process.route.ResponseEntity;
 import br.com.softhouse.dende.model.Organizador;
 import br.com.softhouse.dende.repositories.Repositorio;
 
-@Controller
-@RequestMapping(path = "/organizadores")
 public class OrganizadorController {
 
-    private final Repositorio repositorio = Repositorio.getInstance();
+    private final Repositorio repo = Repositorio.getInstance();
 
-    // POST /organizadores
-    @PostMapping
-    public ResponseEntity<Organizador> cadastrar(@RequestBody Organizador organizador) {
-        Organizador salvo = repositorio.salvarOrganizador(organizador);
-        return ResponseEntity.ok(salvo);
+    // Criar organizador
+    public Organizador criarOrganizador(Organizador organizador) {
+        return repo.salvarOrganizador(organizador);
     }
 
-    // GET /organizadores/{organizadorId}
-    @GetMapping(path = "/{organizadorId}")
-    public ResponseEntity<Organizador> buscar(
-            @PathVariable(parameter = "organizadorId") Long organizadorId) {
-
-        return ResponseEntity.ok(repositorio.buscarOrganizador(organizadorId));
+    // Buscar organizador
+    public Organizador buscarOrganizador(Long id) {
+        return repo.buscarOrganizador(id);
     }
 
-    // PUT /organizadores/{organizadorId}
-    @PutMapping(path = "/{organizadorId}")
-    public ResponseEntity<Organizador> alterar(
-            @PathVariable(parameter = "organizadorId") Long organizadorId,
-            @RequestBody Organizador atualizado) {
+    // Desativar organizador
+    public Organizador desativarOrganizador(Long id) {
+        if (repo.organizadorTemEventoAtivoOuEmExecucao(id))
+            throw new IllegalStateException(
+                    "Organizador possui evento ativo ou em execução");
 
-        Organizador organizador = repositorio.buscarOrganizador(organizadorId);
-
-        organizador.setNome(atualizado.getNome());
-        organizador.setEmail(atualizado.getEmail());
-        organizador.setSexo(atualizado.getSexo());
-        organizador.setDataNascimento(atualizado.getDataNascimento());
-        organizador.setCnpj(atualizado.getCnpj());
-        organizador.setRazaoSocial(atualizado.getRazaoSocial());
-        organizador.setNomeFantasia(atualizado.getNomeFantasia());
-
-        return ResponseEntity.ok(organizador);
-    }
-
-    // PATCH /organizadores/{organizadorId}/{status}
-    @PatchMapping(path = "/{organizadorId}/{status}")
-    public ResponseEntity<Organizador> alterarStatus(
-            @PathVariable(parameter = "organizadorId") Long organizadorId,
-            @PathVariable(parameter = "status") Boolean status) {
-
-        Organizador organizador = repositorio.buscarOrganizador(organizadorId);
-        organizador.setAtivo(status);
-
-        return ResponseEntity.ok(organizador);
+        Organizador o = repo.buscarOrganizador(id);
+        o.setAtivo(false);
+        return o;
     }
 }

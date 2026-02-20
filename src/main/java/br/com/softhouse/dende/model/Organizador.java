@@ -10,14 +10,24 @@ public class Organizador {
     private LocalDate dataNascimento;
     private String sexo;
     private String email;
+    private String senha;
+
+    // Empresa (opcional)
     private String cnpj;
     private String razaoSocial;
     private String nomeFantasia;
+
     private boolean ativo;
 
     public Organizador() {
         this.ativo = true;
     }
+
+    public boolean isEmpresa() {
+        return cnpj != null && !cnpj.isBlank();
+    }
+
+    // ===== GETTERS & SETTERS =====
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -35,7 +45,14 @@ public class Organizador {
     public void setSexo(String sexo) { this.sexo = sexo; }
 
     public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setEmail(String email) {
+        if (this.email != null)
+            throw new IllegalStateException("Email não pode ser alterado");
+        this.email = email;
+    }
+
+    public String getSenha() { return senha; }
+    public void setSenha(String senha) { this.senha = senha; }
 
     public String getCnpj() { return cnpj; }
     public void setCnpj(String cnpj) { this.cnpj = cnpj; }

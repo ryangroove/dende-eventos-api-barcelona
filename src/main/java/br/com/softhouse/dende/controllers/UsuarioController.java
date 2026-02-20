@@ -1,56 +1,37 @@
 package br.com.softhouse.dende.controllers;
 
-import br.com.dende.softhouse.annotations.Controller;
-import br.com.dende.softhouse.annotations.request.*;
-import br.com.dende.softhouse.process.route.ResponseEntity;
 import br.com.softhouse.dende.model.Usuario;
 import br.com.softhouse.dende.repositories.Repositorio;
 
-@Controller
-@RequestMapping(path = "/usuarios")
 public class UsuarioController {
 
-    private final Repositorio repositorio = Repositorio.getInstance();
+    private final Repositorio repo = Repositorio.getInstance();
 
-    // POST /usuarios
-    @PostMapping
-    public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuario) {
-        Usuario salvo = repositorio.salvarUsuario(usuario);
-        return ResponseEntity.ok(salvo);
+    // Criar usuário
+    public Usuario criarUsuario(Usuario usuario) {
+        return repo.salvarUsuario(usuario);
     }
 
-    // GET /usuarios/{usuarioId}
-    @GetMapping(path = "/{usuarioId}")
-    public ResponseEntity<Usuario> buscar(@PathVariable(parameter = "usuarioId") Long usuarioId) {
-        Usuario usuario = repositorio.buscarUsuario(usuarioId);
-        return ResponseEntity.ok(usuario);
+    // Buscar usuário por id
+    public Usuario buscarUsuario(Long id) {
+        return repo.buscarUsuario(id);
     }
 
-    // PUT /usuarios/{usuarioId}
-    @PutMapping(path = "/{usuarioId}")
-    public ResponseEntity<Usuario> alterar(
-            @PathVariable(parameter = "usuarioId") Long usuarioId,
-            @RequestBody Usuario usuarioAtualizado) {
+    // Login / reativação por e-mail
+    public Usuario login(String email, String senha) {
+        Usuario usuario = repo.buscarUsuarioPorEmail(email);
 
-        Usuario usuario = repositorio.buscarUsuario(usuarioId);
+        if (!usuario.getSenha().equals(senha))
+            throw new IllegalArgumentException("Senha inválida");
 
-        usuario.setNome(usuarioAtualizado.getNome());
-        usuario.setEmail(usuarioAtualizado.getEmail());
-        usuario.setSexo(usuarioAtualizado.getSexo());
-        usuario.setDataNascimento(usuarioAtualizado.getDataNascimento());
-
-        return ResponseEntity.ok(usuario);
+        usuario.setAtivo(true);
+        return usuario;
     }
 
-    // PATCH /usuarios/{usuarioId}/{status}
-    @PatchMapping(path = "/{usuarioId}/{status}")
-    public ResponseEntity<Usuario> alterarStatus(
-            @PathVariable(parameter = "usuarioId") Long usuarioId,
-            @PathVariable(parameter = "status") Boolean status) {
-
-        Usuario usuario = repositorio.buscarUsuario(usuarioId);
-        usuario.setAtivo(status);
-
-        return ResponseEntity.ok(usuario);
+    // Desativar usuário
+    public Usuario desativarUsuario(Long id) {
+        Usuario usuario = repo.buscarUsuario(id);
+        usuario.setAtivo(false);
+        return usuario;
     }
 }

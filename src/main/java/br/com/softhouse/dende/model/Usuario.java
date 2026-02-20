@@ -1,6 +1,7 @@
 package br.com.softhouse.dende.model;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Objects;
 
 public class Usuario {
@@ -10,20 +11,21 @@ public class Usuario {
     private LocalDate dataNascimento;
     private String sexo;
     private String email;
+    private String senha;
     private boolean ativo;
 
     public Usuario() {
         this.ativo = true;
     }
 
-    public Usuario(Long id, String nome, LocalDate dataNascimento, String sexo, String email) {
-        this.id = id;
-        this.nome = nome;
-        this.dataNascimento = dataNascimento;
-        this.sexo = sexo;
-        this.email = email;
-        this.ativo = true;
+    public String getIdadeFormatada() {
+        Period p = Period.between(this.dataNascimento, LocalDate.now());
+        return p.getYears() + " anos, " +
+               p.getMonths() + " meses e " +
+               p.getDays() + " dias";
     }
+
+    // ===== GETTERS & SETTERS =====
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -41,14 +43,21 @@ public class Usuario {
     public void setSexo(String sexo) { this.sexo = sexo; }
 
     public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setEmail(String email) {
+        if (this.email != null)
+            throw new IllegalStateException("Email não pode ser alterado");
+        this.email = email;
+    }
+
+    public String getSenha() { return senha; }
+    public void setSenha(String senha) { this.senha = senha; }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Usuario)) return false;
-        Usuario usuario = (Usuario) o;
-        return Objects.equals(id, usuario.id);
+        Usuario u = (Usuario) o;
+        return Objects.equals(id, u.id);
     }
 
     @Override
