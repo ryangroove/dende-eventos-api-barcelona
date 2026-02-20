@@ -1,39 +1,62 @@
 package br.com.softhouse.dende.controllers;
 
+import br.com.dende.softhouse.annotations.Controller;
+import br.com.dende.softhouse.annotations.request.*;
+import br.com.dende.softhouse.process.route.ResponseEntity;
+import br.com.softhouse.dende.dto.StatusRequest;
 import br.com.softhouse.dende.model.Organizador;
 import br.com.softhouse.dende.repositories.Repositorio;
-import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/organizadores")
+@Controller
+@RequestMapping(path = "/organizadores")
 public class OrganizadorController {
 
     private final Repositorio repo = Repositorio.getInstance();
 
     @PostMapping
-    public Organizador criar(@RequestBody Organizador organizador) {
-        return repo.salvarOrganizador(organizador);
+    public ResponseEntity<Organizador> cadastrar(
+            @RequestBody Organizador organizador
+    ) {
+        repo.salvarOrganizador(organizador);
+        return ResponseEntity.ok(organizador);
     }
 
-    @PutMapping("/{id}")
-    public Organizador atualizar(@PathVariable Long id,
-                                 @RequestBody Organizador dados) {
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<Organizador> atualizar(
+            @PathVariable(parameter = "id") Long id,
+            @RequestBody Organizador dados
+    ) {
         Organizador o = repo.buscarOrganizador(id);
+
         o.setNome(dados.getNome());
         o.setSenha(dados.getSenha());
-        return o;
+        o.setSexo(dados.getSexo());
+        o.setDataNascimento(dados.getDataNascimento());
+
+        return ResponseEntity.ok(o);
     }
 
-    @GetMapping("/{id}")
-    public Organizador visualizar(@PathVariable Long id) {
-        return repo.buscarOrganizador(id);
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<Organizador> visualizar(
+            @PathVariable(parameter = "id") Long id
+    ) {
+        return ResponseEntity.ok(repo.buscarOrganizador(id));
     }
 
-    @PatchMapping("/{id}/status")
-    public Organizador status(@PathVariable Long id,
-                              @RequestParam boolean ativo) {
+    @PatchMapping(path = "/{id}/status")
+    public ResponseEntity<Organizador> status(
+            @PathVariable(parameter = "id") Long id,
+            @RequestBody StatusRequest req
+    ) {
+        if (!req.isAtivo() && repo.organizadorPossuiEventosAtivos(id)) {
+            throw new IllegalStateException(
+                    "Organizador possui eventos ativos ou em execução"
+            );
+        }
+
         Organizador o = repo.buscarOrganizador(id);
-        o.setAtivo(ativo);
-        return o;
+        o.setAtivo(req.isAtivo());
+
+        return ResponseEntity.ok(o);
     }
 }

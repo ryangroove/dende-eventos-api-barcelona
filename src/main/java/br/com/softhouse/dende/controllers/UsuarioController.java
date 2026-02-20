@@ -1,51 +1,54 @@
 package br.com.softhouse.dende.controllers;
 
+import br.com.dende.softhouse.annotations.Controller;
+import br.com.dende.softhouse.annotations.request.*;
+import br.com.dende.softhouse.process.route.ResponseEntity;
+import br.com.softhouse.dende.dto.StatusRequest;
 import br.com.softhouse.dende.model.Usuario;
 import br.com.softhouse.dende.repositories.Repositorio;
-import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/usuarios")
+@Controller
+@RequestMapping(path = "/usuarios")
 public class UsuarioController {
 
     private final Repositorio repo = Repositorio.getInstance();
 
     @PostMapping
-    public Usuario criar(@RequestBody Usuario usuario) {
-        return repo.salvarUsuario(usuario);
+    public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuario) {
+        repo.salvarUsuario(usuario);
+        return ResponseEntity.ok(usuario);
     }
 
-    @PutMapping("/{id}")
-    public Usuario atualizar(@PathVariable Long id,
-                             @RequestBody Usuario dados) {
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<Usuario> atualizar(
+            @PathVariable(parameter = "id") Long id,
+            @RequestBody Usuario dados
+    ) {
         Usuario u = repo.buscarUsuario(id);
         u.setNome(dados.getNome());
-        u.setSenha(dados.getSenha());
         u.setSexo(dados.getSexo());
         u.setDataNascimento(dados.getDataNascimento());
-        return u;
+        u.setSenha(dados.getSenha());
+        return ResponseEntity.ok(u);
     }
 
-    @GetMapping("/{id}")
-    public Usuario visualizar(@PathVariable Long id) {
-        return repo.buscarUsuario(id);
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<Usuario> visualizar(
+            @PathVariable(parameter = "id") Long id
+    ) {
+        return ResponseEntity.ok(repo.buscarUsuario(id));
     }
 
-    @PatchMapping("/{id}/status")
-    public Usuario alterarStatus(@PathVariable Long id,
-                                 @RequestParam boolean ativo) {
-        Usuario u = repo.buscarUsuario(id);
-        u.setAtivo(ativo);
-        return u;
-    }
+    // User Stories 5 e 6
+    @PatchMapping(path = "/status")
+    public ResponseEntity<Usuario> status(@RequestBody StatusRequest req) {
+        Usuario u = repo.buscarUsuarioPorEmail(req.getEmail());
 
-    @PostMapping("/login")
-    public Usuario login(@RequestParam String email,
-                         @RequestParam String senha) {
-        Usuario u = repo.buscarUsuarioPorEmail(email);
-        if (!u.getSenha().equals(senha))
-            throw new IllegalArgumentException("Senha inválida");
-        u.setAtivo(true);
-        return u;
+        if (!u.getSenha().equals(req.getSenha())) {
+            throw new IllegalStateException("Credenciais inválidas");
+        }
+
+        u.setAtivo(req.isAtivo());
+        return ResponseEntity.ok(u);
     }
 }
