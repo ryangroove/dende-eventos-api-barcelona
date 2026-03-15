@@ -3,11 +3,15 @@ package br.com.softhouse.dende.controllers;
 import br.com.dende.softhouse.annotations.Controller;
 import br.com.dende.softhouse.annotations.request.*;
 import br.com.dende.softhouse.process.route.ResponseEntity;
+import br.com.softhouse.dende.dto.EventoRequestDTO;
+import br.com.softhouse.dende.dto.EventoResponseDTO;
 import br.com.softhouse.dende.dto.StatusEventoRequest;
+import br.com.softhouse.dende.mappers.EventoMapper;
 import br.com.softhouse.dende.model.Evento;
 import br.com.softhouse.dende.repositories.Repositorio;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(path = "/organizadores/{organizadorId}/eventos")
@@ -16,53 +20,79 @@ public class EventoController {
     private final Repositorio repo = Repositorio.getInstance();
 
     @PostMapping
-    public ResponseEntity<Evento> cadastrar(
+    public ResponseEntity<EventoResponseDTO> cadastrar(
             @PathVariable(parameter = "organizadorId") Long organizadorId,
-            @RequestBody Evento evento
+            @RequestBody EventoRequestDTO dto
     ) {
-        evento.setOrganizadorId(organizadorId);
+
+        Evento evento = EventoMapper.toModel(dto, organizadorId);
+
         evento.validarCadastro();
+
         repo.salvarEvento(evento);
-        return ResponseEntity.ok(evento);
+
+        return ResponseEntity.ok(
+                EventoMapper.toDTO(evento)
+        );
     }
 
     @PutMapping(path = "/{eventoId}")
-    public ResponseEntity<Evento> atualizar(
+    public ResponseEntity<EventoResponseDTO> atualizar(
             @PathVariable(parameter = "eventoId") Long eventoId,
-            @RequestBody Evento dados
+            @RequestBody EventoRequestDTO dto
     ) {
-        dados.validarCadastro();
-        Evento e = repo.buscarEvento(eventoId);
-        e.setNome(dados.getNome());
-        e.setDescricao(dados.getDescricao());
-        e.setInicio(dados.getInicio());
-        e.setFim(dados.getFim());
-        e.setLocal(dados.getLocal());
-        e.setPrecoIngresso(dados.getPrecoIngresso());
-        e.setCapacidadeMaxima(dados.getCapacidadeMaxima());
-        return ResponseEntity.ok(e);
+
+        Evento evento = repo.buscarEvento(eventoId);
+
+        evento.setNome(dto.getNome());
+        evento.setDescricao(dto.getDescricao());
+        evento.setInicio(dto.getInicio());
+        evento.setFim(dto.getFim());
+        evento.setTipo(dto.getTipo());
+        evento.setModalidade(dto.getModalidade());
+        evento.setLocal(dto.getLocal());
+        evento.setCapacidadeMaxima(dto.getCapacidadeMaxima());
+        evento.setPrecoIngresso(dto.getPrecoIngresso());
+        evento.setEstorna(dto.isEstorna());
+        evento.setTaxaEstorno(dto.getTaxaEstorno());
+
+        evento.validarCadastro();
+
+        return ResponseEntity.ok(
+                EventoMapper.toDTO(evento)
+        );
     }
 
-    // User Story 9 e 10
     @PatchMapping(path = "/{eventoId}/status")
-    public ResponseEntity<Evento> status(
+    public ResponseEntity<EventoResponseDTO> status(
             @PathVariable(parameter = "eventoId") Long eventoId,
             @RequestBody StatusEventoRequest req
     ) {
+
+        Evento evento = repo.buscarEvento(eventoId);
+
         if (!req.isAtivo()) {
             repo.cancelarEventoComEstorno(eventoId);
         } else {
-            repo.buscarEvento(eventoId).setAtivo(true);
+            evento.setAtivo(true);
         }
-        return ResponseEntity.ok(repo.buscarEvento(eventoId));
+
+        return ResponseEntity.ok(
+                EventoMapper.toDTO(evento)
+        );
     }
 
     @GetMapping
-    public ResponseEntity<List<Evento>> listar(
+    public ResponseEntity<List<EventoResponseDTO>> listar(
             @PathVariable(parameter = "organizadorId") Long organizadorId
     ) {
-        return ResponseEntity.ok(
-                repo.listarEventosPorOrganizador(organizadorId)
-        );
+
+        List<EventoResponseDTO> lista = repo
+                .listarEventosPorOrganizador(organizadorId)
+                .stream()
+                .map(EventoMapper::toDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(lista);
     }
 }

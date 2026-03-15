@@ -20,15 +20,14 @@ public class IngressoController {
     public ResponseEntity<List<Ingresso>> comprar(
             @RequestBody CompraIngressoRequest req
     ) {
+
         Evento evento = repo.buscarEvento(req.getEventoId());
 
-        if (!evento.isAtivo()) {
+        if (!evento.isAtivo())
             throw new IllegalStateException("Evento não está ativo");
-        }
 
-        if (!evento.temVagas()) {
+        if (!evento.temVagas())
             throw new IllegalStateException("Evento lotado");
-        }
 
         evento.venderIngresso();
 
@@ -46,17 +45,20 @@ public class IngressoController {
     public ResponseEntity<Ingresso> cancelar(
             @PathVariable(parameter = "ingressoId") Long ingressoId
     ) {
+
         Ingresso ingresso = repo.buscarIngresso(ingressoId);
         Evento evento = repo.buscarEvento(ingresso.getEventoId());
 
-        if (!ingresso.isAtivo()) {
+        if (!ingresso.isAtivo())
             throw new IllegalStateException("Ingresso já cancelado");
-        }
 
         if (evento.isEstorna()) {
-            double valorEstornado =
+
+            double valorEstorno =
                     ingresso.getValorPago() * (1 - evento.getTaxaEstorno());
-            ingresso.setValorPago(valorEstornado);
+
+            ingresso.setValorPago(valorEstorno);
+
         } else {
             ingresso.setValorPago(0);
         }
@@ -71,6 +73,7 @@ public class IngressoController {
     public ResponseEntity<List<Ingresso>> listar(
             @PathVariable(parameter = "usuarioId") Long usuarioId
     ) {
+
         return ResponseEntity.ok(
                 repo.ingressosPorUsuario(usuarioId)
         );
